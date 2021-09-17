@@ -29,7 +29,6 @@ namespace AffenECS
 
         public EcsComponent Add(Type type)
         {
-            // if (!type.GetInterfaces().Contains(typeof(EcsComponent)))
             if (!typeof(EcsComponent).IsAssignableFrom(type))
             {
                 throw new ArgumentException($"Failed on add component with type {type}: type should be assignable from EcsComponent");
@@ -41,6 +40,7 @@ namespace AffenECS
         public EcsComponent Add(EcsComponent component)
         {
             _components[component.GetType()] = component;
+            EcsWorld.AddComponent(this, component);
             return component;
         }
         
@@ -51,6 +51,7 @@ namespace AffenECS
         public void Remove(EcsComponent component)
         {
             _components.Remove(component.GetType());
+            EcsWorld.RemoveComponent(this, component);
             Destroy(component);
         }
 
@@ -59,6 +60,7 @@ namespace AffenECS
             if (_components.TryGetValue(typeof(T), out EcsComponent component))
             {
                 _components.Remove(typeof(T));
+                EcsWorld.RemoveComponent(this, component);
                 Destroy(component);
             }
         }

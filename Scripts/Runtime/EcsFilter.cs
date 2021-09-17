@@ -72,26 +72,42 @@ namespace AffenECS
 
         public IEnumerator<EcsEntity> GetEnumerator()
         {
-            return EcsWorld.Entities.Where(x =>
+            Type mainType = _includeTypes.First();
+            int mainTypeCount = EcsWorld.ComponentTypeToComponentToEntity[mainType].Count;
+            
+            if (_includeTypes.Count > 1)
             {
-                foreach (var includeType in _includeTypes)
+                foreach (Type includeType in _includeTypes)
                 {
-                    if (!x.Has(includeType))
+                    int includeTypeCount = EcsWorld.ComponentTypeToComponentToEntity[includeType].Count;
+                    if (includeTypeCount < mainTypeCount)
+                    {
+                        mainType = includeType;
+                        mainTypeCount = includeTypeCount;
+                    }
+                }
+            }
+            
+            return EcsWorld.ComponentTypeToEntityToComponent[mainType].Where(x =>
+            {
+                foreach (Type includeType in _includeTypes)
+                {
+                    if (!x.Key.Has(includeType))
                     {
                         return false;
                     }
                 }
 
-                foreach (var excludeType in _excludeTypes)
+                foreach (Type excludeType in _excludeTypes)
                 {
-                    if (x.Has(excludeType))
+                    if (x.Key.Has(excludeType))
                     {
                         return false;
                     }
                 }
 
                 return true;
-            }).GetEnumerator();
+            }).Select(x => x.Key).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
