@@ -16,10 +16,7 @@ namespace AffenECS
 
         static EcsWorld()
         {
-            var ecsComponentTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => typeof(EcsComponent).IsAssignableFrom(x));
-
+            var ecsComponentTypes = EcsTypes.ComponentTypes;
             foreach (Type ecsComponentType in ecsComponentTypes)
             {
                 ComponentTypeToComponentToEntity[ecsComponentType] = new Dictionary<EcsComponent, EcsEntity>();

@@ -10,10 +10,7 @@ namespace AffenECS
         {
             DontDestroyOnLoad(gameObject);
 
-            var ecsSystemTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => typeof(EcsSystem).IsAssignableFrom(x))
-                .Where(TypeCondition);
+            var ecsSystemTypes = EcsTypes.SystemTypes.Where(TypeCondition);
 
             foreach (Type ecsSystemType in ecsSystemTypes)
             {

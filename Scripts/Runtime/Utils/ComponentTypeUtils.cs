@@ -11,10 +11,7 @@ namespace AffenECS
         
         static ComponentTypeUtils()
         {
-            var ecsComponentTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => typeof(EcsComponent).IsAssignableFrom(x))
-                .OrderBy(x => x.FullName);
+            var ecsComponentTypes = EcsTypes.ComponentTypes.OrderBy(x => x.FullName);
 
             ushort index = 0;
             foreach (Type ecsComponentType in ecsComponentTypes)
