@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace AffenECS
 {
@@ -13,7 +14,7 @@ namespace AffenECS
         {
             var ecsComponentTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(x => x.GetTypes())
-                .Where(x => x.GetInterfaces().Contains(typeof(EcsComponent)))
+                .Where(x => typeof(EcsComponent).IsAssignableFrom(x))
                 .OrderBy(x => x.FullName);
 
             ushort index = 0;
@@ -24,7 +25,7 @@ namespace AffenECS
                 index++;
             }
         }
-
+        
         public static ushort SerializeType(this EcsComponent ecsComponent)
         {
             return SerializedTypesByType[ecsComponent.GetType()];
