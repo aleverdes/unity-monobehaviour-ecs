@@ -26,12 +26,16 @@ namespace AffenECS
                 ComponentTypeToEntityToComponent[ecsComponentType] = new Dictionary<EcsEntity, EcsComponent>();
             }
         }
-        
+
         public static EcsEntity CreateEntity()
         {
-            var go = new GameObject($"Entity {_entityId}");
             _entityId++;
-            
+            return CreateEntity($"Entity {_entityId - 1}");
+        }
+        
+        public static EcsEntity CreateEntity(string entityName)
+        {
+            var go = new GameObject(entityName);
             var entity = go.AddComponent<EcsEntity>();
             Entities.Add(entity);
             return entity;
