@@ -13,8 +13,11 @@ namespace AffenECS
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             var types = assemblies.SelectMany(x => x.GetTypes());
 
-            ComponentTypes = types.Where(x => typeof(EcsComponent).IsAssignableFrom(x)).ToArray();
-            SystemTypes = types.Where(x => typeof(EcsSystem).IsAssignableFrom(x)).ToArray();
+            ComponentTypes = types.Where(IsComponent).ToArray();
+            SystemTypes = types.Where(IsSystem).ToArray();
         }
+
+        public static bool IsSystem(this Type type) => typeof(EcsSystem).IsAssignableFrom(type);
+        public static bool IsComponent(this Type type) => typeof(EcsComponent).IsAssignableFrom(type);
     }
 }
