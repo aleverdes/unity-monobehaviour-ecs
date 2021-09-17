@@ -20,7 +20,7 @@ namespace AffenECS
                 .SelectMany(x => x.GetTypes())
                 .Where(x => typeof(EcsComponent).IsAssignableFrom(x));
 
-            foreach (var ecsComponentType in ecsComponentTypes)
+            foreach (Type ecsComponentType in ecsComponentTypes)
             {
                 ComponentTypeToComponentToEntity[ecsComponentType] = new Dictionary<EcsComponent, EcsEntity>();
                 ComponentTypeToEntityToComponent[ecsComponentType] = new Dictionary<EcsEntity, EcsComponent>();
@@ -53,15 +53,15 @@ namespace AffenECS
         {
             Type componentType = component.GetType();
 
-            var componentToEntities = ComponentTypeToComponentToEntity.ContainsKey(componentType)
+            var componentTypeToComponentToEntity = ComponentTypeToComponentToEntity.ContainsKey(componentType)
                 ? ComponentTypeToComponentToEntity[componentType]
                 : ComponentTypeToComponentToEntity[componentType] = new Dictionary<EcsComponent, EcsEntity>();
-            componentToEntities[component] = entity;
+            componentTypeToComponentToEntity[component] = entity;
 
-            var componentToEntities2 = ComponentTypeToEntityToComponent.ContainsKey(componentType)
+            var componentTypeToEntityToComponent = ComponentTypeToEntityToComponent.ContainsKey(componentType)
                 ? ComponentTypeToEntityToComponent[componentType]
                 : ComponentTypeToEntityToComponent[componentType] = new Dictionary<EcsEntity, EcsComponent>();
-            componentToEntities2[entity] = component;
+            componentTypeToEntityToComponent[entity] = component;
             
             var entitiesToComponents = EntitiesToComponents.ContainsKey(entity) 
                 ? EntitiesToComponents[entity] 

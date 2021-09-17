@@ -73,13 +73,13 @@ namespace AffenECS
         public IEnumerator<EcsEntity> GetEnumerator()
         {
             Type mainType = _includeTypes.First();
-            int mainTypeCount = EcsWorld.ComponentTypeToComponentToEntity[mainType].Count;
+            int mainTypeCount = EcsWorld.ComponentTypeToEntityToComponent[mainType].Count;
             
             if (_includeTypes.Count > 1)
             {
                 foreach (Type includeType in _includeTypes)
                 {
-                    int includeTypeCount = EcsWorld.ComponentTypeToComponentToEntity[includeType].Count;
+                    int includeTypeCount = EcsWorld.ComponentTypeToEntityToComponent[includeType].Count;
                     if (includeTypeCount < mainTypeCount)
                     {
                         mainType = includeType;
