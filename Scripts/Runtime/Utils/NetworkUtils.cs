@@ -189,6 +189,9 @@ namespace AffenECS
                 
                 fieldInfo.SetValue(component, value);
             }
+            
+            ms.Dispose();
+            br.Dispose();
         }
     
         public static FieldInfo[] GetFieldInfos(Type componentType)
