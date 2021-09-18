@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace AffenECS
 {
@@ -85,8 +86,46 @@ namespace AffenECS
                 }
                 else if (type == typeof(string))
                 {
-                    // bw.Write(((string) value).Length);
-                    bw.Write((string) value);
+                    var chars = ((string) value).ToCharArray();
+                    bw.Write(chars.Length);
+                    bw.Write(chars);
+                }
+                else if (type == typeof(Vector2))
+                {
+                    var typedValue = (Vector2) value;
+                    bw.Write(typedValue.x);
+                    bw.Write(typedValue.y);
+                }
+                else if (type == typeof(Vector3))
+                {
+                    var typedValue = (Vector3) value;
+                    bw.Write(typedValue.x);
+                    bw.Write(typedValue.y);
+                    bw.Write(typedValue.z);
+                }
+                else if (type == typeof(Vector4))
+                {
+                    var typedValue = (Vector4) value;
+                    bw.Write(typedValue.x);
+                    bw.Write(typedValue.y);
+                    bw.Write(typedValue.z);
+                    bw.Write(typedValue.w);
+                }
+                else if (type == typeof(Quaternion))
+                {
+                    var typedValue = (Quaternion) value;
+                    bw.Write(typedValue.x);
+                    bw.Write(typedValue.y);
+                    bw.Write(typedValue.z);
+                    bw.Write(typedValue.w);
+                }
+                else if (type == typeof(Color))
+                {
+                    var typedValue = (Color) value;
+                    bw.Write(typedValue.r);
+                    bw.Write(typedValue.g);
+                    bw.Write(typedValue.b);
+                    bw.Write(typedValue.a);
                 }
             }
 
@@ -113,7 +152,7 @@ namespace AffenECS
 
             foreach (var fieldInfo in fieldInfos)
             {
-                object value;
+                object value = null;
                 Type type = fieldInfo.FieldType;
                 if (type == typeof(bool))
                 {
@@ -179,12 +218,28 @@ namespace AffenECS
                 }
                 else if (type == typeof(string))
                 {
-                    // int length = br.ReadInt32();
-                    value = br.ReadString();
+                    int length = br.ReadInt32();
+                    value = new string(br.ReadChars(length));
                 }
-                else
+                else if (type == typeof(Vector2))
                 {
-                    value = null;
+                    value = new Vector2(br.ReadSingle(), br.ReadSingle());
+                }
+                else if (type == typeof(Vector3))
+                {
+                    value = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+                }
+                else if (type == typeof(Vector4))
+                {
+                    value = new Vector4(br.ReadSingle(), br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+                }
+                else if (type == typeof(Quaternion))
+                {
+                    value = new Quaternion(br.ReadSingle(), br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
+                }
+                else if (type == typeof(Color))
+                {
+                    value = new Color(br.ReadSingle(), br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
                 }
                 
                 fieldInfo.SetValue(component, value);
