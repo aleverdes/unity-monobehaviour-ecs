@@ -17,7 +17,7 @@ namespace AffenECS
             SystemTypes = types.Where(IsSystem).ToArray();
         }
 
-        public static bool IsSystem(this Type type) => typeof(EcsSystem).IsAssignableFrom(type);
-        public static bool IsComponent(this Type type) => typeof(EcsComponent).IsAssignableFrom(type);
+        public static bool IsSystem(this Type type) => typeof(EcsSystem).IsAssignableFrom(type) && type != typeof(EcsSystem);
+        public static bool IsComponent(this Type type) => typeof(EcsComponent).IsAssignableFrom(type) && type != typeof(EcsComponent);
     }
 }
