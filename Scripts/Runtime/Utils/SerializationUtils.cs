@@ -7,9 +7,24 @@ using UnityEngine;
 
 namespace AffenECS
 {
-    public static class NetworkUtils
+    public static class SerializationUtils
     {
-        private static readonly Dictionary<Type, FieldInfo[]> ComponentTypeFieldInfos = new Dictionary<Type, FieldInfo[]>(); 
+        private static readonly Dictionary<Type, FieldInfo[]> ComponentTypeFieldInfos = new Dictionary<Type, FieldInfo[]>();
+        private static readonly Dictionary<Type, ushort> SerializedTypesByType = new Dictionary<Type, ushort>();
+        private static readonly Dictionary<ushort, Type> SerializedTypesByIndex = new Dictionary<ushort, Type>();
+        
+        static SerializationUtils()
+        {
+            var ecsComponentTypes = EcsTypes.ComponentTypes.OrderBy(x => x.FullName);
+
+            ushort index = 0;
+            foreach (Type ecsComponentType in ecsComponentTypes)
+            {
+                SerializedTypesByType.Add(ecsComponentType, index);
+                SerializedTypesByIndex.Add(index, ecsComponentType);
+                index++;
+            }
+        }
         
         public static byte[] Serialize(this EcsComponent component)
         {
@@ -248,8 +263,18 @@ namespace AffenECS
             ms.Dispose();
             br.Dispose();
         }
-    
-        public static FieldInfo[] GetFieldInfos(Type componentType)
+        
+        private static ushort SerializeType(this EcsComponent ecsComponent)
+        {
+            return SerializedTypesByType[ecsComponent.GetType()];
+        }
+
+        private static Type DeserializeType(this ushort ecsComponentSerializedTypeIndex)
+        {
+            return SerializedTypesByIndex[ecsComponentSerializedTypeIndex];
+        }
+
+        private static FieldInfo[] GetFieldInfos(Type componentType)
         {
             if (!ComponentTypeFieldInfos.TryGetValue(componentType, out var fieldInfos))
             {
